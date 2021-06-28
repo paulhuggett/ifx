@@ -1,10 +1,10 @@
 # Internal Fixups in rld
 
-The program respository uses “fixups” to express relationships between the sections of a single fragment and between different fragments. These are similar to the “relocations” used by other file formats such as ELF, Mach-O, or COFF.
+The program repository uses “fixups” to express relationships between the sections of a single fragment and between different fragments. These are similar to the “relocations” used by other file formats such as ELF, Mach-O, or COFF.
 
-The program respository uses two different kinds of fixup: external and internal. 
+The program repository uses two different kinds of fixup: external and internal.
 
-- “External” fixups are used for a inter-fragment references. Each external fixup references its target by name. The fragment corresponding to that name is determined by the symbol table which reflects the outcome of the linker’s symbol resolution. 
+- “External” fixups are used for inter-fragment references. Each external fixup references its target by name. The fragment corresponding to that name is determined by the symbol table which reflects the outcome of the linker’s symbol resolution.
 
 - ”Internal” fixups are intra-fragment references. They are used when data in one section of a fragment needs to reference data in a different section of the same fragment.
 
@@ -28,54 +28,57 @@ The fragment associated with each definition holds the sections shown in the dia
 
 ### Scan
 
-The linker’s “scan” tasks are primarily responsible for performing symbol resolution, but other tasks happen here as well. During symbol resolution we consider each definition and decide whether to create a new symbol or discard it according to the [symbol resolution rules](https://github.com/SNSystems/llvm-project-prepo/wiki/%5Brld%5D-Symbol-resolution-rules). 
+The linker’s “scan” tasks are primarily responsible for performing symbol resolution, but other work also happens here.
 
-For each retained symbol with more than one section, a [pstore::sparse\_array<>](https://codedocs.xyz/paulhuggett/pstore2/classpstore_1_1repo_1_1sparse__array.html) is allocated where the available indices correspond to the fragment’s sections. That is, fragment f<sub>1</sub> has text and data sections so we allocate a sparse array with two members; fragment f<sub>3</sub> has text, data, and rodata so its sparse array has three members. f<sub>2</sub> has only a single section so therefore has no internal fixups. This means that we do not need a corresponding sparse array for this fragment and its value is `nullptr` (as shown by the “ground” symbol).
+During symbol resolution we consider each definition and decide whether to create a new symbol or discard it according to the [symbol resolution rules](https://github.com/SNSystems/llvm-project-prepo/wiki/%5Brld%5D-Symbol-resolution-rules).
+
+For each retained definition with more than one section, a [pstore::sparse\_array<>](https://codedocs.xyz/paulhuggett/pstore2/classpstore_1_1repo_1_1sparse__array.html) is allocated where the available indices correspond to the fragment’s sections. That is, fragment f<sub>1</sub> has text and data sections so we allocate a sparse array with two members; fragment f<sub>3</sub> has text, data, and rodata so its sparse array has three members. f<sub>2</sub> has only a single section so therefore has no internal fixups. This means that we do not need a corresponding sparse array for this fragment and its value is `nullptr` (as shown by the “ground” symbol).
 
 At this stage, the value of each array member is `nullptr`.
 
+Allocation for these structures comes from a per-thread [pstore::chunked_sequence<>](https://codedocs.xyz/paulhuggett/pstore2/classpstore_1_1chunked__sequence.html) instance which allows for fast, lock-free, allocation.
+
 ![Scan Phase Output](images/scan.svg)
+
+The scan phase yields a vector containing one `sparse_array<>` pointer for each retained definition per input compilation.
 
 ### Layout
 
 The linker’s “layout” task is responsible for deciding where everything is placed in target memory. It is also partially responsible for the final layout within the output file; the precise position is format-dependent so the final decision is made by format-specific code.
 
-Layout creates an instance of the `OutputSection` type for each distint section type that will appear in the final output. In the case of this example, that is text, data, and rodata. It attaches each section that contributes to the output section via an instance of the `Contribution` type. The output sections know which contributions they each contain; each contribution knows which output sections to which it belongs.
+Layout creates an instance of the `OutputSection` type for each distinct section type that will appear in the final output. In the case of this example, that is text, data, and rodata. It attaches each section that contributes to the output section via an instance of the `Contribution` type. The output sections know which contributions they each contain; each contribution knows which output sections to which it belongs.
 
 #### Contributions
 
 Contributions are an important data structure in layout. Each contribution instance corresponds to a section of a fragment that will be copied to the output. It carries the information needed to place it correctly (on disk and in target memory) with the required alignment and to process its internal and external fixups.
 
-For our purposes, the Contribution holds three critical facts:
-
-1. The target address of the section data
-2. The collection of internal fixups associated with the section (if any)
-3. A pointer to a sparse_array<> as provided by Scan above
+#### Follow the links
 
 ![Layout 1](images/layout1.svg)
 
-At the same time we can point the fields of the `sparse_array<>` to the corresponding contributions.
+As the contributions for each fragment are instantiated, we can point the fields of the `sparse_array<>` to the correct addresses.
 
 ![Layout 2](images/layout2.svg)
 
 (These diagrams are separated so that the links are somewhat easier to see: as a single diagram there are far too many arrows!)
 
-In this way, it’s possible to follow the pointers from a Contribution to the other contributions from the same fragment. This is exactly the information that we need to apply internal fixups in the copy phase.
+In this way, it’s possible to follow the pointers from a `Contribution` to the other contributions from the same fragment. This is exactly the information that we need to apply internal fixups in the copy phase.
 
 ### Copy
 
-The linker’s copy phase is the consumer of the data stuctures that we built in the earlier stages. It copies the section data to the final output file and, as such, it is responsible for applying both the external- and internal-fixups.
+The linker’s copy phase is the consumer of the data structures that we built in the earlier stages. It copies the section data to the final output file and, as such, it is responsible for applying both the external- and internal-fixups.
 
-This diagram focusses on fragment f<sub>1</sub>’s text section. The other sections have the same basic connections, but the representation of the section itself varies between sections (for example, BSS sections have only size and alignment).
+The algorithm simply enumerates the output sections and the contributions that each holds. As each Contribution is visited we perform a sequence of steps:
 
-Here we show teh f<sub>1</sub> text section with a single internal fixup. 
+1. Copy the section payload to the output file.
+1. Apply each of the external fixups associated with the section.
+1. Apply each of the internal fixups associated with the section.
 
-Steps: 
+For each internal fixup:
 
-1. Copy the f<sub>1</sub> text section payload to the output file
-2. Enumerate each of the internal fixups associated with f<sub>1</sub> text. For each:
-    - Compute the location at which the fixup action will be applied. This is the file offset of the section plus the value of fixup offset field
-    - Compute the 
+- Compute the location at which the fixup action will be applied. This is the file offset of the section plus the value of fixup offset field.
+- Compute the value of the fixup. The specifics vary according to the fixup type field and its interpretation according to the appropriate ABI documentation, however we can think of this as using the target address of referenced section plus the addend value.
 
+This diagram focusses on fragment f<sub>1</sub>’s text section, showing the section with a single internal fixup. The other sections have the same basic connections, but the representation of the section itself varies between sections (for example, BSS sections have only size and alignment).
     
 ![Copy](images/copy.svg)
