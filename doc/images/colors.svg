@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:dc="http://purl.org/dc/elements/1.1/" version="1.1" xmlns:xl="http://www.w3.org/1999/xlink" viewBox="-20 19 288 115" width="288" height="115">
+  <defs>
+    <font-face font-family="Helvetica Neue" font-size="16" panose-1="2 0 5 3 0 0 0 2 0 4" units-per-em="1000" underline-position="-100" underline-thickness="50" slope="0" x-height="517" cap-height="714" ascent="951.9958" descent="-212.99744" font-weight="400">
+      <font-face-src>
+        <font-face-name name="HelveticaNeue"/>
+      </font-face-src>
+    </font-face>
+    <font-face font-family="Helvetica Neue" font-size="11" panose-1="2 0 5 3 0 0 0 2 0 4" units-per-em="1000" underline-position="-100" underline-thickness="50" slope="0" x-height="517" cap-height="714" ascent="951.9958" descent="-212.99744" font-weight="400">
+      <font-face-src>
+        <font-face-name name="HelveticaNeue"/>
+      </font-face-src>
+    </font-face>
+  </defs>
+  <metadata> Produced by OmniGraffle 7.18.5\n2021-06-28 11:53:27 +0000</metadata>
+  <g id="Coloured_Sections" fill-opacity="1" fill="none" stroke="none" stroke-opacity="1" stroke-dasharray="none">
+    <title>Coloured Sections</title>
+    <rect fill="white" x="-20" y="19" width="288" height="115"/>
+    <g id="Coloured_Sections_Layer_1">
+      <title>Layer 1</title>
+      <g id="Group_11">
+        <g id="Graphic_14">
+          <rect x="-19" y="76.448" width="71" height="28.474" fill="#ffc0c0"/>
+          <rect x="-19" y="76.448" width="71" height="28.474" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+          <text transform="translate(-17 81.461)" fill="black">
+            <tspan font-family="Helvetica Neue" font-size="16" font-weight="400" fill="black" x="17.644" y="15">data</tspan>
+          </text>
+        </g>
+        <g id="Graphic_13">
+          <rect x="-19" y="47.974" width="71" height="28.474" fill="#c0c0ff"/>
+          <rect x="-19" y="47.974" width="71" height="28.474" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+          <text transform="translate(-17 52.987)" fill="black">
+            <tspan font-family="Helvetica Neue" font-size="16" font-weight="400" fill="black" x="20.02" y="15">text</tspan>
+          </text>
+        </g>
+        <g id="Graphic_12">
+          <text transform="translate(-17 23.083)" fill="black">
+            <tspan font-family="Helvetica Neue" font-size="16" font-weight="400" fill="black" x="0" y="15">f</tspan>
+            <tspan font-family="Helvetica Neue" font-size="11" font-weight="400" fill="black" y="19">1</tspan>
+          </text>
+        </g>
+      </g>
+      <g id="Group_8">
+        <g id="Graphic_10">
+          <rect x="88.25" y="43.052" width="71" height="23.552002" fill="#ffc0ff"/>
+          <rect x="88.25" y="43.052" width="71" height="23.552002" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+          <text transform="translate(90.25 45.604004)" fill="black">
+            <tspan font-family="Helvetica Neue" font-size="16" font-weight="400" fill="black" x="20.02" y="15">text</tspan>
+          </text>
+        </g>
+        <g id="Graphic_9">
+          <text transform="translate(90.25 20.622002)" fill="black">
+            <tspan font-family="Helvetica Neue" font-size="16" font-weight="400" fill="black" x="0" y="15">f</tspan>
+            <tspan font-family="Helvetica Neue" font-size="11" font-weight="400" fill="black" y="19">2</tspan>
+          </text>
+        </g>
+      </g>
+      <g id="Group_3">
+        <g id="Graphic_7">
+          <rect x="195.5" y="104.4" width="71" height="28.3" fill="#ffffc0"/>
+          <rect x="195.5" y="104.4" width="71" height="28.3" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+          <text transform="translate(197.5 109.326)" fill="black">
+            <tspan font-family="Helvetica Neue" font-size="16" font-weight="400" fill="black" x="10.532" y="15">rodata</tspan>
+          </text>
+        </g>
+        <g id="Graphic_6">
+          <rect x="195.5" y="76.1" width="71" height="28.3" fill="#c0ffff"/>
+          <rect x="195.5" y="76.1" width="71" height="28.3" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+          <text transform="translate(197.5 81.026)" fill="black">
+            <tspan font-family="Helvetica Neue" font-size="16" font-weight="400" fill="black" x="17.644" y="15">data</tspan>
+          </text>
+        </g>
+        <g id="Graphic_5">
+          <rect x="195.5" y="47.8" width="71" height="28.3" fill="#c0ffc0"/>
+          <rect x="195.5" y="47.8" width="71" height="28.3" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+          <text transform="translate(197.5 52.726)" fill="black">
+            <tspan font-family="Helvetica Neue" font-size="16" font-weight="400" fill="black" x="20.02" y="15">text</tspan>
+          </text>
+        </g>
+        <g id="Graphic_4">
+          <text transform="translate(197.5 22.996)" fill="black">
+            <tspan font-family="Helvetica Neue" font-size="16" font-weight="400" fill="black" x="0" y="15">f</tspan>
+            <tspan font-family="Helvetica Neue" font-size="11" font-weight="400" fill="black" y="19">3</tspan>
+          </text>
+        </g>
+      </g>
+    </g>
+  </g>
+</svg>
