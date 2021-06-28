@@ -32,7 +32,7 @@ The linker’s “scan” tasks are primarily responsible for performing symbol 
 
 During symbol resolution we consider each definition and decide whether to create a new symbol or discard it according to the [symbol resolution rules](https://github.com/SNSystems/llvm-project-prepo/wiki/%5Brld%5D-Symbol-resolution-rules).
 
-For each retained definition with more than one section, a [pstore::sparse\_array<>](https://codedocs.xyz/paulhuggett/pstore2/classpstore_1_1repo_1_1sparse__array.html) is allocated where the available indices correspond to the fragment’s sections. That is, fragment f<sub>1</sub> has text and data sections so we allocate a sparse array with two members; fragment f<sub>3</sub> has text, data, and rodata so its sparse array has three members. f<sub>2</sub> has only a single section so therefore has no internal fixups. This means that we do not need a corresponding sparse array for this fragment and its value is `nullptr` (as shown by the “ground” symbol).
+For each retained definition with more than one section, a [pstore::sparse\_array<>](https://codedocs.xyz/paulhuggett/pstore2/classpstore_1_1repo_1_1sparse__array.html) is allocated where the available indices correspond to the fragment’s sections. That is, fragment f<sub>1</sub> has text and data sections so we allocate a sparse array with two members; fragment f<sub>3</sub> has text, data, and rodata so its sparse array has three members. f<sub>2</sub> has only a single section so therefore has no internal fixups. This means that we do not need a corresponding sparse array for this fragment and its value is `nullptr` (as shown by the “earth ground” symbol ⏚).
 
 At this stage, the value of each array member is `nullptr`.
 
@@ -50,7 +50,7 @@ Layout creates an instance of the `OutputSection` type for each distinct section
 
 #### Contributions
 
-Contributions are an important data structure in layout. Each contribution instance corresponds to a section of a fragment that will be copied to the output. It carries the information needed to place it correctly (on disk and in target memory) with the required alignment and to process its internal and external fixups.
+Contributions are an important data structure in layout. Each `Contribution` instance corresponds to a section of a fragment that will be copied to the output. It carries the information needed to place it correctly (on disk and in target memory) with the required alignment and to process its internal and external fixups.
 
 #### Follow the links
 
