@@ -13,26 +13,26 @@
 
 
 /// Derives the correct type for the bitmap field of a sparse_array<> given the maximum index value.
-template <uint_least64_t V, typename Enable = void>
+template <uintmax_t V, typename Enable = void>
 struct sparray_bitmap {};
-template <uint_least64_t V>
+template <uintmax_t V>
 struct sparray_bitmap<V, typename std::enable_if_t<(V <= 8U)>> {
     using type = uint8_t;
 };
-template <uint_least64_t V>
+template <uintmax_t V>
 struct sparray_bitmap<V, typename std::enable_if_t<(V > 8U && V <= 16U)>> {
     using type = uint16_t;
 };
-template <uint_least64_t V>
+template <uintmax_t V>
 struct sparray_bitmap<V, typename std::enable_if_t<(V > 16U && V <= 32U)>> {
     using type = uint32_t;
 };
-template <uint_least64_t V>
+template <uintmax_t V>
 struct sparray_bitmap<V, typename std::enable_if_t<(V > 32U && V <= 64U)>> {
     using type = uint64_t;
 };
 
-template <uint_least64_t V>
+template <uintmax_t V>
 using sparray_bitmap_t = typename sparray_bitmap<V>::type;
 
 
@@ -63,8 +63,8 @@ public:
         return sa_[static_cast<index_type> (k)];
     }
 
-    static size_t size_bytes (size_t num_sections) {
-        return decltype (sa_)::size_bytes (num_sections);
+    static size_t size_bytes (size_t num_sections) noexcept {
+        return array_type::size_bytes (num_sections);
     }
 
     class indices {
