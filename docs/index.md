@@ -1,12 +1,22 @@
 # Internal Fixups
 
+* [Introduction](#introduction)
+* [Internal Fixups in rld](#internal-fixups-in-rld)
+* [Database Representation](#database-representation)
+    * [Scan](#scan)
+    * [Layout](#layout)
+        * [Contributions](#contributions)
+        * [Follow the links](#follow-the-links)
+    * [Copy](#copy)
+
+## Introduction
 The program repository uses “fixups” to express relationships between the sections of a single fragment and between different fragments. These are similar to the “relocations” used by other file formats such as ELF, Mach-O, or COFF. 
 
 The program repository uses two different kinds of fixup: external and internal.
 
-- “External” fixups are used for inter-fragment references. Each external fixup references its target by name. The fragment corresponding to that name is determined by the symbol table which reflects the outcome of the linker’s symbol resolution.
+- “External” fixups are used for inter-fragment references. Each external fixup references the lowest-numbered section of a named fragment. The each fragment corresponding to that name is determined by linker’s [symbol resolution rules](https://github.com/SNSystems/llvm-project-prepo/wiki/%5Brld%5D-Symbol-resolution-rules). (See the [glossary definition](https://github.com/SNSystems/llvm-project-prepo/wiki/Glossary#external-fixup).)
 
-- ”Internal” fixups are intra-fragment references. They are used when data in one section of a fragment needs to reference data in a different section of the same fragment.
+- ”Internal” fixups are intra-fragment references. They are used when data in one section of a fragment needs to reference data in a different section of the same fragment. (See the [glossary definition](https://github.com/SNSystems/llvm-project-prepo/wiki/Glossary#internal-fixup).)
 
 ## Internal Fixups in rld
 
@@ -22,7 +32,7 @@ We start with a single compilation containing three definitions (named “a”, 
 | b    | f<sub>2</sub> | text               |
 | c    | f<sub>3</sub> | text, data, rodata |
 
-The [fragment]() associated with each definition holds the sections shown in the diagram below. To hopefully make the diagrams below easier to follow, I have color-coded each of the sections associated with each of the three fragments (below).
+The [fragment](https://codedocs.xyz/paulhuggett/pstore2/classpstore_1_1repo_1_1fragment.html) associated with each definition holds the sections shown in the diagram below. To hopefully make the diagrams below easier to follow, I have color-coded each of the sections associated with each of the three fragments (below).
 
 ![Database Representation](images/db.svg)
 
@@ -32,7 +42,7 @@ The [fragment]() associated with each definition holds the sections shown in the
 
 The linker’s “scan” tasks are primarily responsible for performing symbol resolution, but other work also happens here.
 
-During symbol resolution we consider each definition and decide whether to create a new symbol or discard it according to the [symbol resolution rules](https://github.com/SNSystems/llvm-project-prepo/wiki/%5Brld%5D-Symbol-resolution-rules). We also connect external fixups to symbols.
+During symbol resolution we consider each definition and decide whether to create a new symbol or discard it according to the symbol resolution rules. We also connect external fixups to symbols.
 
 For each retained definition with more than one section, a [pstore::sparse\_array<>](https://codedocs.xyz/paulhuggett/pstore2/classpstore_1_1sparse__array.html#details) is allocated where the available indices correspond to the fragment’s sections. That is, fragment f<sub>1</sub> has text and data sections so we allocate a sparse array with two members; fragment f<sub>3</sub> has text, data, and rodata so its sparse array has three members. f<sub>2</sub> has only a single section so therefore has no internal fixups. This means that we do not need a corresponding sparse array for this fragment and its value is `nullptr` (as shown by the “earth ground” symbol ⏚).
 
@@ -70,19 +80,17 @@ In this way, it’s possible to follow the pointers from a `Contribution` to the
 
 The linker’s copy phase is the consumer of the data structures that we built in the earlier stages. It copies the section data to the final output file and, as such, it is responsible for applying both the external- and internal-fixups.
 
-The algorithm simply enumerates the output sections and the contributions that each holds. As each Contribution is visited we perform a sequence of steps:
+The algorithm simply enumerates the output sections and the contributions that each holds. As each `Contribution` is visited we perform a sequence of steps:
 
 1. Copy the section payload to the output file.
 1. Apply each of the external fixups associated with the section.
-1. Apply each of the internal fixups associated with the section.
+1. Apply each of the internal fixups associated with the section. For each internal fixup:
 
-For each internal fixup:
-
-- Compute the location at which the fixup action will be applied. This is the file offset of the section plus the value of fixup offset field.
-- Compute the value of the fixup. The specifics vary according to the fixup type field and its interpretation according to the appropriate ABI documentation, however we can think of this as using the target address of referenced section plus the addend value.
+       - Compute the location at which the fixup action will be applied. This is the file offset of the section plus the value of fixup offset field.
+       - Compute the value of the fixup. The specifics vary according to the fixup type field and its interpretation according to the appropriate ABI documentation, however we can think of this as using the target address of referenced section plus the addend value.
 
 This diagram below focusses on fragment f<sub>1</sub>’s text section (highlighted with a thick red border), showing the section with a single internal fixup. The other sections have the same basic connections, but the representation of the section itself varies between sections (for example, BSS sections have only size and alignment).
     
 ![Copy](images/copy.svg)
 
-We can derive the target address and output-file offset of the f<sub>1</sub> text section from its Contribution record. The internal fixup in the diagram references the data section: we can derive the same for this section by dereferencing the sparse_array<> pointer from the text section’s contribution and accessing the data section’s entry in the array.
+We can derive the target address and output-file offset of the f<sub>1</sub> text section from its `Contribution` record. The internal fixup in the diagram references the data section: we can derive the same for this section by dereferencing the `sparse_array<>`pointer from the text section’s contribution and accessing the data section’s entry in the array.
