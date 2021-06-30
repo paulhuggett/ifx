@@ -18,10 +18,10 @@ namespace {
     ///
     /// \param storage  A chunked-sequence which will be used to manage the storage.
     /// \param required  The number of contiguous elements required.
-    /// \result A pointer to a contiguous block of storage which is sufficient for
-    ///   \p Required members.
-    template <typename ChunkedSequence, typename ValueType = typename ChunkedSequence::value_type>
-    ValueType * reserve_contiguous (ChunkedSequence * const storage, size_t const required) {
+    /// \result A pointer to a contiguous block of storage which is sufficient for \p required members.
+    template <typename ChunkedSequence>
+    typename ChunkedSequence::value_type *
+    csalloc (ChunkedSequence * const storage, size_t required, size_t align) {
         assert (storage != nullptr);
         assert (required <= ChunkedSequence::elements_per_chunk);
         if (required == 0U) {
@@ -29,21 +29,23 @@ namespace {
         }
         size_t const capacity = storage->capacity ();
         size_t size = storage->size ();
-        if (capacity - size < required) {
+        assert (capacity >= size && "Capacity cannot be less than size");
+        if (capacity - (size + align - 1U) < required) {
             // A resize to burn through the remaining members of the container's final
             // chunk.
             storage->resize (capacity);
             size = capacity;
         }
-        // Add a nullptr. This is the first element of the returned array and allows
-        // us to use back() to get the starting address.
-        storage->emplace_back ();
+        // Add a default-constructed value. This is the first element of the returned array and gets us the starting address.
+        auto * result = &storage->emplace_back ();
         ++size;
+        auto misaligned = reinterpret_cast <uintptr_t> (result) % align;
+        if (misaligned != 0) {
+            required += align - misaligned;
+            result += align - misaligned;
+        }
         assert (storage->size () == size && "Size didn't track the container size correctly");
-        ValueType * const result = &storage->back ();
         storage->resize (size + required - 1U);
-        assert (static_cast<size_t> (&storage->back () + 1 - result) == required &&
-                "Storage isn't contiguous");
         return result;
     }
 
@@ -53,10 +55,7 @@ namespace {
     using repo::section_kind;
 
     struct contribution;
-    using contribution_array = sparse_array<contribution *, uintptr_t>;
-    static_assert (sizeof (contribution_array::value_type) ==
-                       sizeof (contribution_array::bitmap_type),
-                   "static assert");
+    using contribution_array = sparse_array<contribution *, std::underlying_type_t<section_kind>>;
 
     struct contribution {
         constexpr contribution (section_kind skind, std::string const * const name,
@@ -69,13 +68,14 @@ namespace {
         contribution_array const * const sections;
     };
 
+    // Our super-minimal simulated fragment data structure.
     struct fragment {
         explicit fragment (std::string name, std::initializer_list<section_kind> sections) noexcept
                 : name{std::move (name)}
                 , sections{sections} {}
-        std::size_t size () const noexcept { return sections.size (); }
-
+        // Fragments don't really have names. Here I use the name to show that the code is finding the correct fragment.
         std::string const name;
+        // In the real implementation, this is a sparse array where the indices are the section numbers and the values are the offset to the start of the payload data associated with that section.
         std::set<section_kind> const sections;
     };
 
@@ -93,7 +93,7 @@ namespace {
         fragment_to_contribution_map captr;
 
         for (fragment const & f : fragments) {
-            std::size_t const num_sections = f.size ();
+            std::size_t const num_sections = f.sections.size ();
             if (num_sections < 2U) {
                 // A fragment with only a single section cannot, by definition, have any internal
                 // fixups to process since their purpose is to allow one section of a fragment to
@@ -101,10 +101,7 @@ namespace {
                 // fragment.
                 captr[&f] = nullptr;
             } else {
-                std::size_t const size = contribution_array::size_bytes (num_sections);
-                assert (size % sizeof (contribution_array::value_type) == 0 &&
-                        "Size must be a multiple of the size of the stored type");
-                auto * const ptr = reserve_contiguous (storage, size);
+                auto * const ptr = csalloc (storage, contribution_array::size_bytes (num_sections), alignof (contribution_array));
                 assert (reinterpret_cast<uintptr_t> (ptr) % alignof (contribution_array) == 0 &&
                         "Storage must be aligned correctly");
                 captr[&f] =
@@ -156,9 +153,7 @@ namespace {
                     // section.
                     contribution_array const & sections = *c.sections;
                     for (auto const index : sections.get_indices ()) {
-                        contribution const * const value = sections[index];
-                        std::cout << "    " << static_cast<section_kind> (index) << " "
-                                  << *value->name << '\n';
+                        std::cout << "    " << *(sections[index]->name) << ':' << static_cast<section_kind> (index) << '\n';
                     }
                 }
             }
@@ -170,6 +165,12 @@ namespace {
 
 int main () {
     chunked_sequence<uint8_t> storage;
+
+
+auto * a = csalloc(&storage, 1, 4);
+auto * b = csalloc(&storage, 1, 4);
+assert (reinterpret_cast<uintptr_t> (a) % 4 == 0);
+assert (reinterpret_cast<uintptr_t> (b) % 4 == 0);
 
     // First build some simulated fragments. Each has nothing more than an indication of the
     // different section types that it is carrying.
