@@ -1,6 +1,6 @@
-# Internal Fixups in rld
+# Internal Fixups
 
-The program repository uses “fixups” to express relationships between the sections of a single fragment and between different fragments. These are similar to the “relocations” used by other file formats such as ELF, Mach-O, or COFF.
+The program repository uses “fixups” to express relationships between the sections of a single fragment and between different fragments. These are similar to the “relocations” used by other file formats such as ELF, Mach-O, or COFF. 
 
 The program repository uses two different kinds of fixup: external and internal.
 
@@ -8,9 +8,11 @@ The program repository uses two different kinds of fixup: external and internal.
 
 - ”Internal” fixups are intra-fragment references. They are used when data in one section of a fragment needs to reference data in a different section of the same fragment.
 
-## Example
+## Internal Fixups in rld
 
-### Database Representation
+It’s easiest to discuss the way in which internal fixups are implemented in rld in the context of an example.
+
+## Database Representation
 
 We start with a single compilation containing three definitions (named “a”, “b” and “c”). 
 
@@ -20,19 +22,19 @@ We start with a single compilation containing three definitions (named “a”, 
 | b    | f<sub>2</sub> | text               |
 | c    | f<sub>3</sub> | text, data, rodata |
 
-The fragment associated with each definition holds the sections shown in the diagram below. To hopefully make the diagrams below easier to follow, I have color-coded each of the sections associated with each of the three fragments (below).
+The [fragment]() associated with each definition holds the sections shown in the diagram below. To hopefully make the diagrams below easier to follow, I have color-coded each of the sections associated with each of the three fragments (below).
 
 ![Database Representation](images/db.svg)
 
-(The “extent” type used to connect the definition to its fragment is how pstore describes the address and size of variable-length structures such as fragments. These dotted lines represent connections within the database address space, not heap pointers.)
+(The [extent](https://codedocs.xyz/paulhuggett/pstore2/structpstore_1_1extent.html) type used to connect the definition to its fragment is how pstore describes the address and size of variable-length structures such as fragments. These dotted lines represent connections within the database address space, not heap pointers.)
 
 ### Scan
 
 The linker’s “scan” tasks are primarily responsible for performing symbol resolution, but other work also happens here.
 
-During symbol resolution we consider each definition and decide whether to create a new symbol or discard it according to the [symbol resolution rules](https://github.com/SNSystems/llvm-project-prepo/wiki/%5Brld%5D-Symbol-resolution-rules).
+During symbol resolution we consider each definition and decide whether to create a new symbol or discard it according to the [symbol resolution rules](https://github.com/SNSystems/llvm-project-prepo/wiki/%5Brld%5D-Symbol-resolution-rules). We also connect external fixups to symbols.
 
-For each retained definition with more than one section, a [pstore::sparse\_array<>](https://codedocs.xyz/paulhuggett/pstore2/classpstore_1_1repo_1_1sparse__array.html) is allocated where the available indices correspond to the fragment’s sections. That is, fragment f<sub>1</sub> has text and data sections so we allocate a sparse array with two members; fragment f<sub>3</sub> has text, data, and rodata so its sparse array has three members. f<sub>2</sub> has only a single section so therefore has no internal fixups. This means that we do not need a corresponding sparse array for this fragment and its value is `nullptr` (as shown by the “earth ground” symbol ⏚).
+For each retained definition with more than one section, a [pstore::sparse\_array<>](https://codedocs.xyz/paulhuggett/pstore2/classpstore_1_1sparse__array.html#details) is allocated where the available indices correspond to the fragment’s sections. That is, fragment f<sub>1</sub> has text and data sections so we allocate a sparse array with two members; fragment f<sub>3</sub> has text, data, and rodata so its sparse array has three members. f<sub>2</sub> has only a single section so therefore has no internal fixups. This means that we do not need a corresponding sparse array for this fragment and its value is `nullptr` (as shown by the “earth ground” symbol ⏚).
 
 At this stage, the value of each array member is `nullptr`.
 
