@@ -11,13 +11,13 @@
 
 ## Introduction
 
-The program repository uses “fixups” to express relationships between the sections of a single fragment and between different fragments. These are similar to the “relocations” used by other file formats such as ELF, Mach-O, or COFF. 
+The program repository uses “fixups” to express relationships between the [sections](https://codedocs.xyz/paulhuggett/pstore2/classpstore_1_1repo_1_1generic__section.html)  [[glossary](https://github.com/SNSystems/llvm-project-prepo/wiki/Glossary#section)] of a single [fragment](https://codedocs.xyz/paulhuggett/pstore2/classpstore_1_1repo_1_1fragment.html) [[glossary](https://github.com/SNSystems/llvm-project-prepo/wiki/Glossary#fragment)] and between different fragments. These are similar to the “relocations” used by other file formats such as ELF, Mach-O, or COFF. 
 
 The program repository uses two different kinds of fixup: external and internal.
 
-- “External” fixups [[glossary definition](https://github.com/SNSystems/llvm-project-prepo/wiki/Glossary#external-fixup)] are used for inter-fragment references. Each external fixup references the lowest-numbered section of a named fragment. The each fragment corresponding to that name is determined by linker’s [symbol resolution rules](https://github.com/SNSystems/llvm-project-prepo/wiki/%5Brld%5D-Symbol-resolution-rules).
+- “External” fixups [[glossary](https://github.com/SNSystems/llvm-project-prepo/wiki/Glossary#external-fixup)] are used for inter-fragment references. Each external fixup references the lowest-numbered section of a named fragment. The each fragment corresponding to that name is determined by linker’s [symbol resolution rules](https://github.com/SNSystems/llvm-project-prepo/wiki/%5Brld%5D-Symbol-resolution-rules).
 
-- ”Internal” fixups [[glossary definition](https://github.com/SNSystems/llvm-project-prepo/wiki/Glossary#internal-fixup)] are intra-fragment references. They are used when data in one section of a fragment needs to reference data in a different section of the same fragment.
+- ”Internal” fixups [[glossary](https://github.com/SNSystems/llvm-project-prepo/wiki/Glossary#internal-fixup)] are intra-fragment references. They are used when data in one section of a fragment needs to reference data in a different section of the same fragment.
 
 ## Internal Fixups in rld
 
@@ -33,7 +33,7 @@ We start with a single compilation containing three definitions (named “a”, 
 | b    | f<sub>2</sub> | text               |
 | c    | f<sub>3</sub> | text, data, rodata |
 
-The [fragment](https://codedocs.xyz/paulhuggett/pstore2/classpstore_1_1repo_1_1fragment.html) [[glossary](https://github.com/SNSystems/llvm-project-prepo/wiki/Glossary#fragment)] associated with each definition holds the sections shown in the diagram below. To hopefully make the diagrams below easier to follow, I have color-coded each of the sections [[glossary](https://github.com/SNSystems/llvm-project-prepo/wiki/Glossary#section)] associated with each of the three fragments (below).
+The fragment associated with each definition holds the sections shown in the diagram below. To hopefully make the diagrams below easier to follow, I have color-coded each of the sections associated with each of the three fragments (below).
 
 ![Database Representation](images/db.svg)
 
