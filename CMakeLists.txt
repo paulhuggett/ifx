@@ -3,7 +3,7 @@ project (ifx CXX)
 
 include (${CMAKE_INSTALL_PREFIX}/lib/pstore/pstore.cmake)
 
-add_executable (ifx ifx.cpp)
+add_executable (ifx ifx.cpp contribution_sparray.hpp cs_alloc.hpp)
 target_link_libraries (ifx PUBLIC pstore::pstore-adt pstore::pstore-mcrepo)
 
 set_target_properties (ifx PROPERTIES
