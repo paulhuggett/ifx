@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
-<svg xmlns="http://www.w3.org/2000/svg" xmlns:dc="http://purl.org/dc/elements/1.1/" version="1.1" xmlns:xl="http://www.w3.org/1999/xlink" viewBox="12 3 695 501" width="695" height="501">
+<svg xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns="http://www.w3.org/2000/svg" xmlns:xl="http://www.w3.org/1999/xlink" version="1.1" viewBox="12 3 695 501" width="695" height="501">
   <defs>
     <font-face font-family="Helvetica Neue" font-size="10" panose-1="2 0 5 3 0 0 0 2 0 4" units-per-em="1000" underline-position="-100" underline-thickness="50" slope="0" x-height="517" cap-height="714" ascent="951.9958" descent="-212.99744" font-weight="400">
       <font-face-src>
@@ -57,14 +57,9 @@
         <path d="M 3.7333333 0 L 0 0 M 0 -1.4 L 3.7333333 0 L 0 1.4" fill="none" stroke="currentColor" stroke-width="1"/>
       </g>
     </marker>
-    <marker orient="auto" overflow="visible" markerUnits="strokeWidth" id="FilledArrow_Marker_2" stroke-linejoin="miter" stroke-miterlimit="10" viewBox="-1 -3 7 6" markerWidth="7" markerHeight="6" color="black">
-      <g>
-        <path d="M 4.8 0 L 0 -1.8 L 0 1.8 Z" fill="currentColor" stroke="currentColor" stroke-width="1"/>
-      </g>
-    </marker>
   </defs>
-  <metadata> Produced by OmniGraffle 7.18.5\n2021-06-28 14:33:35 +0000</metadata>
-  <g id="Phase_3__Copy" fill-opacity="1" fill="none" stroke="none" stroke-opacity="1" stroke-dasharray="none">
+  <metadata> Produced by OmniGraffle 7.18.5\n2021-06-30 14:42:36 +0000</metadata>
+  <g id="Phase_3__Copy" stroke="none" stroke-opacity="1" fill="none" stroke-dasharray="none" fill-opacity="1">
     <title>Phase 3: Copy</title>
     <rect fill="white" x="12" y="3" width="695" height="501"/>
     <g id="Phase_3__Copy_Layer_1">
@@ -77,7 +72,7 @@
       </g>
       <g id="Graphic_40">
         <text transform="translate(14.5 330.5)" fill="black">
-          <tspan font-family="Helvetica Neue" font-size="16" font-weight="400" fill="black" x="0" y="15">Section(*)</tspan>
+          <tspan font-family="Helvetica Neue" font-size="16" font-weight="400" fill="black" x="0" y="15">Section</tspan>
         </text>
       </g>
       <g id="Line_39">
@@ -272,10 +267,10 @@
         </text>
       </g>
       <g id="Line_113">
-        <path d="M 171.908 175.5 C 171.908 175.5 147.13647 204.2587 141.0828 279.61783 C 136.4326 337.506 144.5071 401.98174 148.50096 428.76595" marker-end="url(#FilledArrow_Marker_2)" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="2.0,8.0" stroke-width="2"/>
+        <path d="M 171.908 175.5 C 171.908 175.5 147.13647 204.2587 141.0828 279.61783 C 136.4326 337.506 144.5071 401.98174 148.50096 428.76595" marker-end="url(#FilledArrow_Marker)" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="2.0,8.0" stroke-width="2"/>
       </g>
       <g id="Line_115">
-        <path d="M 498.164 171.97055 C 511.78305 172.91184 532.7874 183.20982 555.55096 226.948 C 587.3282 288.00506 610.42686 390.9656 618.0499 427.8473" marker-end="url(#FilledArrow_Marker_2)" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="2.0,8.0" stroke-width="2"/>
+        <path d="M 498.164 178.37192 C 516.38683 184.06483 543.1106 201.0335 537.26115 251.59236 C 530.1584 312.98355 477.7502 400.38287 458.56637 430.67296" marker-end="url(#FilledArrow_Marker)" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="2.0,8.0" stroke-width="2"/>
       </g>
       <g id="Group_11">
         <g id="Graphic_98">
@@ -302,6 +297,16 @@
             <tspan font-family="Helvetica Neue" font-size="11" font-weight="400" fill="black" y="19">1</tspan>
           </text>
         </g>
+      </g>
+      <g id="Graphic_116">
+        <text transform="translate(488.88547 349.79683) rotate(-65.4015)" fill="black">
+          <tspan font-family="Helvetica Neue" font-size="10" font-weight="400" fill="black" x="8739676e-19" y="10">file offset</tspan>
+        </text>
+      </g>
+      <g id="Graphic_117">
+        <text transform="translate(153.3481 322.18027) rotate(87.6179)" fill="black">
+          <tspan font-family="Helvetica Neue" font-size="10" font-weight="400" fill="black" x="8739676e-19" y="10">file offset</tspan>
+        </text>
       </g>
     </g>
   </g>

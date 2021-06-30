@@ -81,6 +81,8 @@ For each internal fixup:
 - Compute the location at which the fixup action will be applied. This is the file offset of the section plus the value of fixup offset field.
 - Compute the value of the fixup. The specifics vary according to the fixup type field and its interpretation according to the appropriate ABI documentation, however we can think of this as using the target address of referenced section plus the addend value.
 
-This diagram focusses on fragment f<sub>1</sub>’s text section, showing the section with a single internal fixup. The other sections have the same basic connections, but the representation of the section itself varies between sections (for example, BSS sections have only size and alignment).
+This diagram below focusses on fragment f<sub>1</sub>’s text section (highlighted with a thick red border), showing the section with a single internal fixup. The other sections have the same basic connections, but the representation of the section itself varies between sections (for example, BSS sections have only size and alignment).
     
 ![Copy](images/copy.svg)
+
+We can derive the target address and output-file offset of the f<sub>1</sub> text section from its Contribution record. The internal fixup in the diagram references the data section: we can derive the same for this section by dereferencing the sparse_array<> pointer from the text section’s contribution and accessing the data section’s entry in the array.
