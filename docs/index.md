@@ -1,6 +1,7 @@
 # Internal Fixups
 
 * [Introduction](#introduction)
+* [rld](#rld)
 * [Internal Fixups in rld](#internal-fixups-in-rld)
     * [Database Representation](#database-representation)
     * [Scan](#scan)
@@ -18,6 +19,10 @@ The program repository uses two different kinds of fixup: external and internal.
 - “External” fixups [[glossary](https://github.com/SNSystems/llvm-project-prepo/wiki/Glossary#external-fixup)] are used for inter-fragment references. Each external fixup references the lowest-numbered section of the fragment associated with a named definition [[glossary](https://github.com/SNSystems/llvm-project-prepo/wiki/Glossary#definition)]. The fragment corresponding to that name is determined by linker’s [symbol resolution rules](https://github.com/SNSystems/llvm-project-prepo/wiki/%5Brld%5D-Symbol-resolution-rules).
 
 - ”Internal” fixups [[glossary](https://github.com/SNSystems/llvm-project-prepo/wiki/Glossary#internal-fixup)] are intra-fragment references. They are used when data in one section of a fragment needs to reference data in a different section of the same fragment.
+
+## rld
+
+[rld](https://github.com/SNSystems/llvm-project-prepo/tree/master/rld) is the program repository aware linker. It does not used intermediate object files, and is designed with a minimal feature set for the fastest links!
 
 ## Internal Fixups in rld
 
