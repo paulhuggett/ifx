@@ -15,7 +15,7 @@ The program repository uses “fixups” to express relationships between the [s
 
 The program repository uses two different kinds of fixup: external and internal.
 
-- “External” fixups [[glossary](https://github.com/SNSystems/llvm-project-prepo/wiki/Glossary#external-fixup)] are used for inter-fragment references. Each external fixup references the lowest-numbered section of the fragment associated with a named definition [[glossary](https://github.com/SNSystems/llvm-project-prepo/wiki/Glossary#definition)]. The each fragment corresponding to that name is determined by linker’s [symbol resolution rules](https://github.com/SNSystems/llvm-project-prepo/wiki/%5Brld%5D-Symbol-resolution-rules).
+- “External” fixups [[glossary](https://github.com/SNSystems/llvm-project-prepo/wiki/Glossary#external-fixup)] are used for inter-fragment references. Each external fixup references the lowest-numbered section of the fragment associated with a named definition [[glossary](https://github.com/SNSystems/llvm-project-prepo/wiki/Glossary#definition)]. The fragment corresponding to that name is determined by linker’s [symbol resolution rules](https://github.com/SNSystems/llvm-project-prepo/wiki/%5Brld%5D-Symbol-resolution-rules).
 
 - ”Internal” fixups [[glossary](https://github.com/SNSystems/llvm-project-prepo/wiki/Glossary#internal-fixup)] are intra-fragment references. They are used when data in one section of a fragment needs to reference data in a different section of the same fragment.
 
