@@ -29,4 +29,3 @@ if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
 elseif (MSVC)
     target_compile_options (ifx PRIVATE -W4)
 endif ()
-

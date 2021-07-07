@@ -9,22 +9,23 @@
 
 #include "pstore/adt/chunked_sequence.hpp"
 
-/// Increases the number of elements in a chunked sequence by \p required ensuring that the
-/// resulting storage is contiguous.
+/// Increases the number of elements in a byte-wide chunked sequence by \p required ensuring that
+/// the resulting storage is contiguous.
 ///
 /// \param storage  A chunked-sequence which will be used to manage the storage.
-/// \param required  The number of contiguous elements required.
-/// \result A pointer to a contiguous block of storage which is sufficient for \p required members.
+/// \param required  The number of contiguous bytes required.
+/// \param align  The required alignment for the start of the returned storage.
+/// \result A pointer to a contiguous block of storage which is sufficient for \p required bytes.
 template <std::size_t ElementsPerChunk>
-void * cs_alloc (pstore::chunked_sequence<uint8_t, ElementsPerChunk> * const storage,
-                 size_t required, size_t align) {
+void * cs_alloc (pstore::chunked_sequence<std::uint8_t, ElementsPerChunk> * const storage,
+                 std::size_t required, std::size_t const align) {
     assert (storage != nullptr && "Storage must not be null");
     assert (required <= ElementsPerChunk);
     if (required == 0U) {
         return nullptr;
     }
-    size_t const capacity = storage->capacity ();
-    size_t size = storage->size ();
+    std::size_t const capacity = storage->capacity ();
+    std::size_t size = storage->size ();
     assert (capacity >= size && "Capacity cannot be less than size");
     if (capacity - (size + align - 1U) < required) {
         // A resize to burn through the remaining members of the container's final

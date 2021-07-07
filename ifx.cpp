@@ -7,7 +7,10 @@
 #include <string>
 #include <vector>
 
+// pstore
 #include "pstore/mcrepo/section_sparray.hpp"
+
+// local
 #include "cs_alloc.hpp"
 
 using namespace pstore;
@@ -44,15 +47,16 @@ struct fragment {
 
 namespace {
 
-    // A function to be used as unique_ptr<> deleter which simply does nothing.
+    /// A function to be used as unique_ptr<> deleter which simply does nothing. For these pointers,
+    /// storage is managed elsewhere.
     constexpr void nop_free (void *) noexcept {}
 
-    // A type similar to unique_ptr<> but where placement new is used for allocation and therefore
-    // the deleter function is a no-op.
+    /// A type similar to unique_ptr<> but where placement new is used for allocation and therefore
+    /// the deleter function is a no-op.
     template <typename T>
     using placement_unique_ptr = std::unique_ptr<T, decltype (&nop_free)>;
 
-    template <class T, class... Args>
+    template <typename T, typename... Args>
     std::enable_if_t<!std::is_array<T>::value, placement_unique_ptr<T>>
     make_placement_unique_ptr (void * ptr, Args &&... args) {
         return placement_unique_ptr<T>{new (ptr) T (std::forward<Args> (args)...), &nop_free};
