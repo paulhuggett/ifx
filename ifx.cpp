@@ -89,9 +89,12 @@ namespace {
                 return placement_unique_ptr<contribution_sparray>{nullptr, &nop_free};
             }
 
-            auto * const ptr = cs_alloc (storage, contribution_sparray::size_bytes (num_sections), alignof (contribution_sparray));
-            assert (reinterpret_cast<std::uintptr_t> (ptr) % alignof (contribution_sparray) == 0 && "Storage must be aligned correctly");
-            return make_placement_unique_ptr<contribution_sparray> (ptr, std::begin (f.sections), std::end (f.sections));
+            auto * const ptr = cs_alloc (storage, contribution_sparray::size_bytes (num_sections),
+                                         alignof (contribution_sparray));
+            assert (reinterpret_cast<std::uintptr_t> (ptr) % alignof (contribution_sparray) == 0 &&
+                    "Storage must be aligned correctly");
+            return make_placement_unique_ptr<contribution_sparray> (ptr, std::begin (f.sections),
+                                                                    std::end (f.sections));
         };
 
         fragment_to_contribution_map fc;
@@ -122,7 +125,8 @@ namespace {
                 if (ca) {
                     // Now that we've got a contribution record for this section, we can record it
                     // in the fragment's sparse array.
-                    assert (ca->has_index (section) && "The array does have an index for one of the fragment's sections");
+                    assert (ca->has_index (section) &&
+                            "The array does have an index for one of the fragment's sections");
                     (*ca)[section] = &v.back ();
                 }
             }
