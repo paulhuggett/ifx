@@ -22,7 +22,7 @@ The program repository uses two different kinds of fixup: external and internal.
 
 ## rld
 
-[rld](https://github.com/SNSystems/llvm-project-prepo/tree/master/rld) is the program repository aware linker. It does not used intermediate object files, and is designed with a minimal feature set for the fastest links!
+[rld](https://github.com/SNSystems/llvm-project-prepo/tree/master/rld) is the program repository aware linker. It does not use intermediate object files, and is designed with a minimal feature set for the fastest links!
 
 ## Internal Fixups in rld
 
